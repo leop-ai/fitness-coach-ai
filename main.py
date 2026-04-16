@@ -1,12 +1,9 @@
 import os
 import sys
 
-# Patch for crewai bug - pkg_resources not available in some environments
-try:
-    import pkg_resources
-except ImportError:
-    import setuptools
-    import pkg_resources
+# Disable crewai telemetry to avoid pkg_resources dependency bug
+os.environ["OTEL_SDK_DISABLED"] = "true"
+os.environ["CREWAI_DISABLE_TELEMETRY"] = "true"
 
 import streamlit as st
 from crewai import Agent, Task, Crew, LLM
