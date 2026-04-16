@@ -1,4 +1,13 @@
 import os
+import sys
+
+# Patch for crewai bug - pkg_resources not available in some environments
+try:
+    import pkg_resources
+except ImportError:
+    import setuptools
+    import pkg_resources
+
 import streamlit as st
 from crewai import Agent, Task, Crew, LLM
 
