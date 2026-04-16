@@ -1,9 +1,6 @@
-﻿import os
+import os
 import streamlit as st
 from crewai import Agent, Task, Crew, LLM
-from dotenv import load_dotenv
-
-load_dotenv()
 
 st.set_page_config(page_title="Check-In Analyser", page_icon="💪", layout="wide")
 
@@ -38,7 +35,8 @@ if run_button:
         st.warning("Fill in all fields in the sidebar before running.")
     else:
         with st.spinner("3 agents analysing... 30-60 seconds..."):
-            claude = LLM(model="claude-opus-4-5", api_key=os.getenv("ANTHROPIC_API_KEY"))
+            api_key = st.secrets["ANTHROPIC_API_KEY"]
+            claude = LLM(model="claude-opus-4-5", api_key=api_key)
             analyst = Agent(role="Adherence Analyst", goal="Score client adherence with brutal honesty", backstory=f"You analyse fitness client check-ins. You compare what they did vs what they were supposed to do. You spot excuses disguised as reasons. You output a structured scorecard. The client goal is {client_goal}.", llm=claude, verbose=False)
             strategist = Agent(role="Coach Strategist", goal="Decide the single most important coaching focus for this reply", backstory=f"You understand behaviour change. You decide whether this client needs accountability, encouragement, a plan tweak, or a mindset shift. Coaching style to match: {coaching_style}.", llm=claude, verbose=False)
             writer = Agent(role="Message Writer", goal="Write a personalised coach reply the coach can send immediately", backstory=f"You write coach replies that feel personal and human. You always reference specific things the client said, never generic praise. Style: {coaching_style}. Always end with ONE clear action for next week. Max 120 words.", llm=claude, verbose=False)
